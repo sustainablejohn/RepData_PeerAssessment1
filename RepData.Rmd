@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible research - Peer Assessment #1
 Prepared by John Romankiewicz, Berkeley, CA
 Date: 10/15/2015
 
@@ -74,9 +69,31 @@ The new mean number of steps is `r newMeanSteps`, and the median number of steps
 ```{r}
 data$date <- as.Date(data$date)
 data[,4] <- weekdays(data$date)
+if (data[,4] == "Monday") {
+  data[,5] <- "weekday"
+}
+else if (data[,4] == "Tuesday"){
+  data[,5] <- "weekday"
+}
+else if (data[,4] == "Wednesday"){
+  data[,5] <- "weekday"
+}
+else if (data[,4] == "Thursday"){
+  data[,5] <- "weekday"
+}
+else if (data[,4] == "Friday"){
+  data[,5] <- "weekday"
+}
+else {
+  data[,5] <- "weekend"
+}
+
+dataSum3 <- aggregate(x = data[c("steps", "V4", "V5")],FUN=mean, by=list(Group.interval = data$interval), na.rm=TRUE)
+
+plot(dataSum3$Group.interval, dataSum2$steps, type="l", ylim=c(0,200), xlab="Time interval", ylab="Average number of steps", main="Average number of steps by time interval")
 ```
 
-I didn't get to finish this part :()
+I didn't get to finish this part:
 
 Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 

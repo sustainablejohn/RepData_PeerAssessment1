@@ -1,16 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 Prepared by John Romankiewicz, Berkeley, CA
 Date: 10/15/2015
 
 First you'll need to clone the repository at this link:
 http://github.com/rdpeng/RepData_PeerAssessment1
 
-```{r}
+
+```r
 temp <- unzip("activity.zip")
 data <- read.csv(temp, header=T)
 ```
@@ -19,40 +15,50 @@ data <- read.csv(temp, header=T)
 
 Below, we will calculate the mean and median number of steps taken per day, as well as provide a histogram of the number of steps.
 
-```{r}
+
+```r
 dataSum <- aggregate(x = data[c("steps", "interval")],FUN=sum, by = list(Group.date = data$date))
 meanSteps <- mean(dataSum$steps, na.rm=TRUE)
 medianSteps <- median(dataSum$steps, na.rm=TRUE)
 hist(dataSum$steps, xlab="Number of steps", ylab="Number of days", main="Number of steps taken per day")
 ```
 
-The mean number of steps is `r meanSteps`, and the median number of steps taken per day is `r medianSteps`.
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+The mean number of steps is 1.0766189\times 10^{4}, and the median number of steps taken per day is 10765.
 
 ## Question 2: What is the average daily activity pattern?
 
 Now we will make a time series plot of the average number of steps taken per 5-minute time interval, averaged over all days.
 
-```{r}
+
+```r
 dataSum2 <- aggregate(x = data[c("steps")],FUN=mean, by=list(Group.interval = data$interval), na.rm=TRUE)
 
 plot(dataSum2$Group.interval, dataSum2$steps, type="l", ylim=c(0,200), xlab="Time interval", ylab="Average number of steps", main="Average number of steps by time interval")
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 maxInt = dataSum2[which.max(dataSum2$steps),1]
 ```
 
-The 5-minute interval with the maximum number of steps is `r maxInt`.
+The 5-minute interval with the maximum number of steps is 835.
 
 ## Question 3: Imputing missing values
 
 There are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
-```{r}
+
+```r
 missingData <- nrow(data) - sum(complete.cases(data))
 ```
 
-There are `r missingData` rows with missing values. Now, we will fill in the rows with missingData using the mean for that 5-minute interval. Then, we will recalculate the mean and median number of steps to see how our calculations have changed now that there are no missing values.
+There are 2304 rows with missing values. Now, we will fill in the rows with missingData using the mean for that 5-minute interval. Then, we will recalculate the mean and median number of steps to see how our calculations have changed now that there are no missing values.
 
-```{r}
+
+```r
 data2 <- data
 for (i in 1:nrow(data2)) {
   if (is.na(data2[i,1])) {
@@ -67,11 +73,14 @@ newMedianSteps <- median(newDataSum$steps, na.rm=TRUE)
 hist(newDataSum$steps, xlab="Number of steps", ylab="Number of days", main="Number of steps taken per day")
 ```
 
-The new mean number of steps is `r newMeanSteps`, and the median number of steps taken per day is `r newMedianSteps`. By imputing the missing data, the estimates of the total daily number of steps has increased.
+![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+The new mean number of steps is 1.0766189\times 10^{4}, and the median number of steps taken per day is 1.0765\times 10^{4}. By imputing the missing data, the estimates of the total daily number of steps has increased.
 
 ## Question 4: Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+
+```r
 data$date <- as.Date(data$date)
 data[,4] <- weekdays(data$date)
 ```
